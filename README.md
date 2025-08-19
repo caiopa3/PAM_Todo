@@ -8,4 +8,6 @@ Grupo:
 - Giovani Depiéri
 - João Felipe
 - Kimberly Moura
+- Venicius Ferraz
+- Juan Sanchez
 
