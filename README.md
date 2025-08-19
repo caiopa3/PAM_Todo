@@ -35,9 +35,6 @@ Grupo: - Caio Raphael - Giovani Depiéri - João Felipe - Kimberly Moura - Venic
 2. **Desempenho**
    - Resposta rápida e sem atrasos perceptíveis.
 
-3. **Compatibilidade**
-   - Funciona em dispositivos Android.
-
-4. **Segurança Básica**
+3. **Segurança Básica**
    - Armazenamento local das tarefas com segurança.
 
