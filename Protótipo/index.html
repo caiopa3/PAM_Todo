@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { width: 100%; max-width: 420px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; margin: 0 0 16px; font-size: 22px; }
+    input, textarea, button { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    button { cursor: pointer; background: #4CAF50; color: #fff; border: none; font-weight: bold; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .task { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px; margin: 5px 0; border-radius: 8px; background: #f9f9f9; }
+    .task.done { text-decoration: line-through; background: #d4edda; }
+    .login { display: flex; flex-direction: column; }
+    .hidden { display: none; }
+    .actions { display: flex; gap: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loginScreen">
+      <h1>Login</h1>
+      <div class="login">
+        <input type="text" id="username" placeholder="Usuário" />
+        <input type="password" id="password" placeholder="Senha" />
+        <button id="loginBtn">Entrar</button>
+      </div>
+      <p style="font-size:12px;color:#666;text-align:center;margin-top:8px;">Dica: usuário <strong>admin</strong> e senha <strong>123</strong></p>
+    </div>
+
+    <div id="todoScreen" class="hidden">
+      <div class="topbar">
+        <h1>✅ Todo</h1>
+        <button id="logoutBtn" style="background:#e74c3c;">Sair</button>
+      </div>
+      <input type="text" id="taskTitle" placeholder="Título da tarefa" />
+      <textarea id="taskDesc" placeholder="Descrição (opcional)"></textarea>
+      <button id="addBtn">Adicionar</button>
+      <div id="taskList"></div>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    let tasks = [];
+
+    // Login simples
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("addBtn").addEventListener("click", addTask);
+
+    function login() {
+      const user = /** @type {HTMLInputElement} */(document.getElementById("username")).value;
+      const pass = /** @type {HTMLInputElement} */(document.getElementById("password")).value;
+      if (user === "admin" && pass === "123") {
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("todoScreen").classList.remove("hidden");
+      } else {
+        alert("Usuário ou senha incorretos! Use admin / 123");
+      }
+    }
+
+    function logout() {
+      document.getElementById("todoScreen").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+    }
+
+    function addTask() {
+      const titleEl = /** @type {HTMLInputElement} */(document.getElementById("taskTitle"));
+      const descEl = /** @type {HTMLTextAreaElement} */(document.getElementById("taskDesc"));
+      const title = titleEl.value.trim();
+      const desc = descEl.value.trim();
+      if (!title) return;
+      const task = { id: Date.now(), title: title, desc: desc, done: false };
+      tasks.push(task);
+      titleEl.value = "";
+      descEl.value = "";
+      renderTasks();
+    }
+
+    function toggleDone(id) {
+      tasks = tasks.map(function(t){ return t.id === id ? { id: t.id, title: t.title, desc: t.desc, done: !t.done } : t; });
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(function(t){ return t.id !== id; });
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      tasks.forEach(function(task){
+        const div = document.createElement("div");
+        div.className = "task" + (task.done ? " done" : "");
+
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = task.title;
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const doneBtn = document.createElement("button");
+        doneBtn.textContent = "✔";
+        doneBtn.addEventListener("click", function(){ toggleDone(task.id); });
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "✖";
+        delBtn.style.background = "#e0e0e0";
+        delBtn.style.color = "#333";
+        delBtn.addEventListener("click", function(){ deleteTask(task.id); });
+
+        actions.appendChild(doneBtn);
+        actions.appendChild(delBtn);
+        div.appendChild(titleSpan);
+        div.appendChild(actions);
+        list.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
